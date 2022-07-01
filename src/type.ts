@@ -23,7 +23,7 @@ export function isJsonPrimitive(arg: JsonType): arg is JsonPrimitive {
   return typeof arg === "number" || typeof arg === "string" || typeof arg === "boolean"
 }
 
-export function isEmptyJsonArray(arg: JsonType): arg is [] {
+export function isJsonEmptyArray(arg: JsonType): arg is [] {
   return isJsonArray(arg) && arg.length == 0
 }
 
@@ -50,43 +50,3 @@ export type PropertyMustNullable<T> = {
 }
 
 export type Nullable<T> = { [P in keyof T]: T[P]|null }
-
-
-
-// class C {
-//   c1: number|null = 0
-// }
-//
-// class D {
-//   c1: number = 0
-// }
-//
-// class A {
-//   a:null|string = ""
-//   c:number|null = 0
-//
-//   e:number[]|null = []
-//
-//   d:symbol|null = Symbol()
-//
-//   x:C|null = null
-//
-//   y:Nullable<D>|null = null
-//
-//   static c:number
-//
-//   getA(): null {
-//     return null
-//   }
-//
-//   getC(c:number): null {
-//     return null
-//   }
-//
-//   getD(c:number, abc:string, efg:string): null {
-//     return null
-//   }
-//
-//   se = ()=> {
-//   }
-// }

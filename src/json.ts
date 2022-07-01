@@ -6,7 +6,7 @@ import {
 } from "./class"
 import {hasConstructorDecoder, hasConstructorEncoder, hasDecoder, hasEncoder} from "./coder"
 import {
-  isEmptyJsonArray,
+  isJsonEmptyArray,
   isJsonObject,
   isJsonObjectArray, isJsonPrimitiveArray,
   JsonObject,
@@ -251,7 +251,7 @@ function checkType<T>(fromV: JsonType
   }
   // todo: check array element
 
-  if (isEmptyJsonArray(fromV) && !canRecEmptyArray(property)) {
+  if (isJsonEmptyArray(fromV) && !canRecEmptyArray(property)) {
     return Error(`the json value is '[]', but the property of ${className} is not array type.`)
   }
 
