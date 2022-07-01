@@ -4,22 +4,27 @@ export interface Class<T> {
   new(): T
 }
 
-export class ClassArray<T> extends Array<T> {
+export class ClassArray<T extends {[P in keyof T]: T[P]}> extends Array<T> {
 
-  constructor(clazz: Class<T>) {
+  constructor(prototype: Class<T>|T) {
     super();
     // tsbug: 编译为es5后，内建类型继承的原型链会发生错误改变。
     Object.setPrototypeOf(this, ClassArray.prototype);
 
-    this.itemClass = clazz;
-    Object.defineProperty(this, "itemClass", {enumerable: false});
+    if (typeof prototype === "function") {
+      this.itemPrototype = new prototype();
+    } else {
+      this.itemPrototype = prototype
+    }
+
+    Object.defineProperty(this, "itemPrototype", {enumerable: false});
   }
 
   public newItem():T {
-    return new this.itemClass();
+    return this.itemPrototype;
   }
 
-  private readonly itemClass:Class<T>;
+  private readonly itemPrototype:T;
 }
 
 type NotEmptyArray<T> = Array<T>

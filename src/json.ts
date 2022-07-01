@@ -99,9 +99,10 @@ export class Json {
   }
 
 
-  public fromJson<T extends Mull<T>>(json: JsonObject|string, clazz: Class<T>):[Nullable<T>, null|Error] {
-
-    let prototype = new clazz();
+  public fromJson<T extends Mull<T>>(json: JsonObject|string, prototype: Class<T>|T):[Nullable<T>, null|Error] {
+    if (typeof prototype === "function") {
+      prototype = new prototype();
+    }
 
     let jsonObj :JsonObject = json as JsonObject
     if (typeof json === "string") {
@@ -229,12 +230,12 @@ function checkType<T>(fromV: JsonType
   }
 
   if (isJsonObject(fromV) /* {} */ && !isClass(property) /* not init by new XXX(...)*/) {
-    return Error(`the json value is '{}', but the property of ${className} is not. 
+    return TypeError(`the json value is '{}', but the property of ${className} is not. 
         Please init the value with "new XXX(...)"`)
   }
 
   if (isJsonObjectArray(fromV) /* [{}] */ && !isClassArray(property) /* not init by new ClassArray*/){
-    return Error(`the json value is '[{}]', but the property of ${className} is not. 
+    return TypeError(`the json value is '[{}]', but the property of ${className} is not. 
         Please init the value with "new ClassArray(clazz)"`)
   }
   // todo: check array element
@@ -244,17 +245,17 @@ function checkType<T>(fromV: JsonType
   }
 
   if (isJsonPrimitiveArray(fromV) && !isPrimitiveArray(property)) {
-    return Error(`the json value is '[number|string|boolean]', but the property of ${className} is not. 
+    return TypeError(`the json value is '[number|string|boolean]', but the property of ${className} is not. 
         Please init the value with "null or [xxx]"`)
   }
   // todo: check array element
 
   if (isJsonEmptyArray(fromV) && !canRecEmptyArray(property)) {
-    return Error(`the json value is '[]', but the property of ${className} is not array type.`)
+    return TypeError(`the json value is '[]', but the property of ${className} is not array type.`)
   }
 
   if (typeof fromV !== typeof property) {
-    return Error(`the json value is "<${typeof fromV}>${fromV}", but the property of ${className} is '<${typeof property}>${property}'. 
+    return TypeError(`the json value is "<${typeof fromV}>${fromV}", but the property of ${className} is '<${typeof property}>${property}'.
         Please init the value with "null or <${typeof fromV}>"`)
   }
 
