@@ -1,4 +1,4 @@
-import {ClassArray, Json, JsonKey, RawJson} from "../src"
+import {ClassArray, Json, JsonKey, Nullable, RawJson} from "../src"
 
 
 class Msg {
@@ -45,4 +45,60 @@ test("json", ()=>{
 })
 
 
+function nullable<T>(arg: T): Nullable<T> {
+  return arg
+}
 
+class Cases {
+  constructor(public json:string, public prototype:object) {
+  }
+}
+
+test("json-type-err", ()=>{
+  let cases: Cases[] = [
+    new Cases('{"id":5}', {id:""}),
+    new Cases('{"id":"5"}', {id:5}),
+    new Cases('{"id":{}}', {id:""}),
+    new Cases('{"id":{"i2":0}}', {id:{i2:false}}),
+    new Cases('{"id":[{"a1":0}]}', {id:[]}),
+    new Cases('{"id":[{}]}', {id:[]}),
+  ]
+  let tson = new Json()
+
+  for (let cs of cases) {
+    let err:any
+    try {
+      [, err] = tson.fromJson(cs.json, nullable(cs.prototype))
+    }catch (e) {
+      expect(cs.json + " --- " + e).toBe("")
+    }
+    expect(err).not.toBeNull()
+    expect(err instanceof TypeError).toBe(true)
+  }
+
+})
+
+
+test("json-type-ok", ()=>{
+  let cases: Cases[] = [
+    new Cases('{"id":[5]}', {id:[]}),
+    new Cases('{"id":"5"}', {id:null}),
+    new Cases('{"id":[{}]}', {id:[{}]}),
+    new Cases('{"id":[{}]}', {id:new ClassArray({})}),
+    new Cases('{"id":[]}', {id:new ClassArray({})}),
+    new Cases('{"id":{"i2":0}}', {id:{i2:null}}),
+    new Cases('{"id":[{"a1":0}]}', {id:[{a1:0, c3:""}]}),
+  ]
+  let tson = new Json()
+
+  for (let cs of cases) {
+    let err:any
+    try {
+      [, err] = tson.fromJson(cs.json, nullable(cs.prototype))
+    }catch (e) {
+      expect(cs.json + " --- " + e).toBe("")
+    }
+    expect(err).toBeNull()
+  }
+
+})
