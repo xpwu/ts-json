@@ -1,5 +1,5 @@
-import {JsonType, Nullable, PropertyMustNullable} from "../src"
-import {isPrimitive, isPrimitiveArray} from "../src/class"
+import {Class, JsonType, Nullable, PropertyMustNullable} from "../src"
+
 import {
   isJsonEmptyArray,
   isJsonArray,
@@ -94,13 +94,12 @@ class A {
 }
 
 test("must-mull", ()=>{
-  const t = <T extends PropertyMustNullable<T>>(a:T) => {}
+  const t = <T extends PropertyMustNullable<T>>(clazz: Class<T>) => {return new clazz()}
   const f = ()=>{
-    t(new A)
+    t(A)
   }
 
   expect(f).not.toThrow()
-
 })
 
 
