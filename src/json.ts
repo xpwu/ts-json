@@ -99,7 +99,7 @@ export class Json {
   }
 
 
-  public fromJson<T extends Mull<T>>(json: JsonObject|string, clazz:Class<Nullable<T>>):[Nullable<T>, null|Error] {
+  public fromJson<T extends Mull<T>>(json: JsonObject|string, clazz: Class<T>):[Nullable<T>, null|Error] {
 
     let prototype = new clazz();
 
@@ -168,17 +168,15 @@ export class Json {
         }
 
         prototype[toKey] = retArr
+        continue
       }
 
       if (isJsonObject(fromV) && isClass<{[key:number]:any}>(keyProto)) {
         [prototype[toKey], err] = this.json2class(fromV, keyProto, className)
-        if (err === null) {
-          continue
+        if (err !== null) {
+          return [prototype, err]
         }
-      }
-
-      if (err !== null) {
-        return [prototype, err]
+        continue
       }
 
       prototype[toKey] = fromV

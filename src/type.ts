@@ -43,7 +43,7 @@ type ExtractClass<T> = Exclude<Flatten<T>, Primitive>
 
 type IsFunction<T> = T extends (...args: any)=>any? true : false
 
-type CheckProperty<T> = null extends T? (Flatten<T> extends Primitive? T : RecursionCheck<T>) : never
+type CheckProperty<T> = null extends T? (Flatten<T> extends Primitive|JsonType? T : RecursionCheck<T>) : never
 
 export type PropertyMustNullable<T> = {
   [P in keyof T]: IsFunction<T[P]> extends true? T[P] : CheckProperty<T[P]>

@@ -1,8 +1,9 @@
 import {JsonType} from "./type"
+import {Class} from "./class"
 
 
 export interface ConstructorJsonDecoder {
-  decodeJson<T>(json: JsonType): [T, Error|null]
+  decodeJson(json: JsonType): [any, Error|null]
 }
 
 export interface ConstructorJsonEncoder {
@@ -17,12 +18,16 @@ export interface JsonEncode {
   encodeJson(): JsonType
 }
 
-export class RawJson implements JsonDecoder{
-  public raw:JsonType|null = null
+export class RawJson implements JsonDecoder, JsonEncode{
+  public raw:JsonType = null
 
   decodeJson(json: JsonType): Error | null {
     this.raw = json
     return null;
+  }
+
+  encodeJson(): JsonType | null {
+    return this.raw;
   }
 }
 
