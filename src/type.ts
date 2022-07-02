@@ -1,3 +1,4 @@
+import {JsonDecoder} from "./coder"
 
 export type JsonPrimitive = number|string|boolean
 
@@ -43,8 +44,8 @@ type ExtractClass<T> = Exclude<Flatten<T>, Primitive>
 
 type IsFunction<T> = T extends (...args: any)=>any? true : false
 
-type CheckProperty<T, Exclude> = null extends T? (Flatten<T> extends Primitive|JsonType? T : RecursionCheck<T, Exclude>)
-  : (T extends Exclude ? T : never)
+type CheckProperty<T, Exclude> = null extends T? (Flatten<T> extends Primitive|JsonType|JsonDecoder? T
+    : RecursionCheck<T, Exclude>) : (T extends Exclude ? T : never)
 
 export type PropertyMustNullable<T, Exclude = never> = {
   [P in keyof T]: IsFunction<T[P]> extends true? T[P] : CheckProperty<T[P], Exclude>
