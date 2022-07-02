@@ -99,7 +99,7 @@ export class Json {
   }
 
 
-  public fromJson<T extends Mull<T>>(json: JsonObject|string, prototype: Class<T>|T):[Nullable<T>, null|Error] {
+  public fromJson<T extends Mull<T, Exclude>, Exclude = never>(json: JsonObject|string, prototype: Class<T>|T):[Nullable<T>, null|Error] {
     if (typeof prototype === "function") {
       prototype = new prototype();
     }

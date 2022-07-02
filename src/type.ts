@@ -37,16 +37,17 @@ type Primitive = number|null|string|symbol|boolean
 
 type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
 
-type RecursionCheck<T> = ExtractClass<T> extends PropertyMustNullable<ExtractClass<T>> ? T : never
+type RecursionCheck<T, Exclude> = ExtractClass<T> extends PropertyMustNullable<ExtractClass<T>, Exclude> ? T : never
 
 type ExtractClass<T> = Exclude<Flatten<T>, Primitive>
 
 type IsFunction<T> = T extends (...args: any)=>any? true : false
 
-type CheckProperty<T> = null extends T? (Flatten<T> extends Primitive|JsonType? T : RecursionCheck<T>) : never
+type CheckProperty<T, Exclude> = null extends T? (Flatten<T> extends Primitive|JsonType? T : RecursionCheck<T, Exclude>)
+  : (T extends Exclude ? T : never)
 
-export type PropertyMustNullable<T> = {
-  [P in keyof T]: IsFunction<T[P]> extends true? T[P] : CheckProperty<T[P]>
+export type PropertyMustNullable<T, Exclude = never> = {
+  [P in keyof T]: IsFunction<T[P]> extends true? T[P] : CheckProperty<T[P], Exclude>
 }
 
 export type Nullable<T> = { [P in keyof T]: T[P]|null }
