@@ -102,4 +102,18 @@ test("must-mull", ()=>{
   expect(f).not.toThrow()
 })
 
+class E {
+  e1:number|null = null
+  e2:C = new C()
+}
+
+test("must-mull-exclude", ()=>{
+  const t = <T extends PropertyMustNullable<T, Exclude>, Exclude = never>(clazz: Class<T>) => {return new clazz()}
+  const f = ()=>{
+    t<E, C>(E)
+  }
+
+  expect(f).not.toThrow()
+})
+
 
