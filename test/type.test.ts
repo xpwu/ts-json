@@ -1,4 +1,4 @@
-import {Class, JsonType, Nullable, PropertyMustNullable} from "../src"
+import {Class, JsonType, ProNullable, PropertyMustNullable} from "../src"
 
 import {
   isJsonEmptyArray,
@@ -73,7 +73,7 @@ class A {
 
   x:C|null = null
 
-  y:Nullable<D>|null = null
+  y:ProNullable<D>|null = null
 
   static c:number
 

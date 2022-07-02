@@ -1,4 +1,4 @@
-import {ClassArray, Json, JsonKey, Nullable, RawJson} from "../src"
+import {ClassArray, Json, JsonKey, ProNullable, RawJson} from "../src"
 
 
 class Msg {
@@ -36,16 +36,37 @@ user.m!.id = "iu9jfdlss"
 
 let json = "{\"id\":\"addff\",\"name\":\"aboy\",\"addr\":\"ccc\",\"sex\":1,\"age\":18,\"back\":false,\"sign\":true,\"img\":{\"n\":\"this is an img\"},\"friends\":[\"a\",\"c\"],\"msgs\":[],\"msg2s\":[{\"sender\":\"\"}],\"m\":{\"id\":\"iu9jfdlss\",\"sender\":\"\"}}"
 
+class UserNonNull {
+  id: string = ""
+  name: string|null = null
+  @JsonKey("addr")
+  address: string = ""
+  sex: number = 1
+  age: number|null = null
+  back: boolean|null = null
+  sign: boolean = true
+  img: RawJson = new RawJson()
+  friends: string[]|null = null
+  msgs: Msg[] = new ClassArray(Msg)
+  msg2s: Msg[]|null = new ClassArray(Msg)
+  m: Msg|null = new Msg()
+}
+
 test("json", ()=>{
   let tson = new Json()
   expect(tson.toJson(user)).toBe(json)
+
   let [instance, err] = tson.fromJson(json, User)
   expect(err).toBeNull()
   expect(instance).toEqual(user)
+
+  let [instance2, err2] = tson.fromJson(json, UserNonNull)
+  expect(err2).toBeNull()
+  expect(instance2).toEqual(user)
 })
 
 
-function nullable<T>(arg: T): Nullable<T> {
+function nullable<T>(arg: T): ProNullable<T> {
   return arg
 }
 

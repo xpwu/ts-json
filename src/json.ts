@@ -10,9 +10,7 @@ import {
   isJsonObject,
   isJsonObjectArray, isJsonPrimitiveArray,
   JsonObject,
-  JsonType,
-  Nullable,
-  PropertyMustNullable as Mull
+  JsonType, ProNullable,
 } from "./type"
 
 const jsonToPropertySym: unique symbol = Symbol("from-json");
@@ -50,7 +48,6 @@ function isPropertyKey<T extends object>(instance: T, key: string|symbol|number)
 export class Json {
 
   public toJson<T extends object>(instance: T): string {
-    // let to: JsonObject = {};
 
     let to = this.class2json(instance);
 
@@ -98,8 +95,9 @@ export class Json {
     return to
   }
 
-
-  public fromJson<T extends Mull<T, Exclude>, Exclude = never>(json: JsonObject|string, prototype: Class<T>|T):[Nullable<T>, null|Error] {
+  // <T extends Mull<T, Exclude>, Exclude = never>
+  public fromJson<T extends {[P in keyof T]:T[P]}>(json: JsonObject|string
+                                                   , prototype: Class<T>|T):[ProNullable<T>, null|Error] {
     if (typeof prototype === "function") {
       prototype = new prototype();
     }
@@ -117,8 +115,8 @@ export class Json {
     return this.json2class(jsonObj, prototype, prototype.constructor.name)
   }
 
-  private json2class<T extends {[n:number]:any}>(from: JsonObject, prototype: Nullable<T>
-                                        , className: string): [Nullable<T>, null|Error] {
+  private json2class<T extends {[n:number]:any}>(from: JsonObject, prototype: T
+                                        , className: string): [ProNullable<T>, null|Error] {
 
     if (hasDecoder(prototype)) {
       let err = prototype.decodeJson(from)
@@ -185,7 +183,7 @@ export class Json {
 
     for (let key of getPropertyKeys(prototype)) {
       if (!hasSetKey.has(key)) {
-        prototype[key] = null
+        (prototype as ProNullable<typeof prototype>)[key] = null
       }
     }
 

@@ -1,6 +1,4 @@
 import {JsonType} from "./type"
-import {Class} from "./class"
-
 
 export interface ConstructorJsonDecoder {
   decodeJson(json: JsonType): [any, Error|null]

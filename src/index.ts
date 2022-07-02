@@ -5,4 +5,4 @@ export {JsonDecoder, JsonEncode, ConstructorJsonDecoder, ConstructorJsonEncoder,
 
 export {ClassArray, Class} from "./class"
 
-export {JsonType, JsonObject, JsonPrimitive, JsonArray, Nullable, PropertyMustNullable} from "./type"
+export {JsonType, JsonObject, JsonPrimitive, JsonArray, ProNullable, PropertyMustNullable} from "./type"

@@ -51,4 +51,5 @@ export type PropertyMustNullable<T, Exclude = never> = {
   [P in keyof T]: IsFunction<T[P]> extends true? T[P] : CheckProperty<T[P], Exclude>
 }
 
-export type Nullable<T> = { [P in keyof T]: T[P]|null }
+export type ProNullable<T> = { [P in keyof T]: ProNullable<T[P]>|null }
+
