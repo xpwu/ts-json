@@ -1,4 +1,4 @@
-import {JsonDecoder} from "./coder"
+import {JsonDecoder, RawJson} from "./coder"
 
 export type JsonPrimitive = number|string|boolean
 
@@ -51,5 +51,8 @@ export type PropertyMustNullable<T, Exclude = never> = {
   [P in keyof T]: IsFunction<T[P]> extends true? T[P] : CheckProperty<T[P], Exclude>
 }
 
-export type ProNullable<T> = { [P in keyof T]: ProNullable<T[P]>|null }
+export type ProNullable<T> = { [P in keyof T]: T[P] extends JsonType | RawJson ? T[P]|null : ProNullable<T[P]>|null }
 
+export function asNonNull<T>(arg: T): NonNullable<T> {
+  return arg as NonNullable<T>
+}
