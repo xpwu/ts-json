@@ -123,3 +123,15 @@ test("json-type-ok", ()=>{
   }
 
 })
+
+class Null {
+  a: number = 10
+  c: string | null = ""
+}
+
+test("json-null", ()=>{
+  let [ret, err] = new Json().fromJson({}, Null)
+  expect(err).toBeNull()
+  expect(ret.a).toStrictEqual(null)
+  expect(ret.c).toStrictEqual(null)
+})
