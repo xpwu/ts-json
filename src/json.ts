@@ -2,7 +2,7 @@
 
 import {
   canRecEmptyArray,
-  Class, getArrayItemPrototype, isClass, isClassArray, isPrimitiveArray
+  getArrayItemPrototype, isClass, isClassArray, isPrimitiveArray
 } from "./class"
 import {hasConstructorDecoder, hasConstructorEncoder, hasDecoder, hasEncoder} from "./coder"
 import {
@@ -97,7 +97,8 @@ export class Json {
 
   // <T extends Mull<T, Exclude>, Exclude = never>
   public fromJson<T extends {[P in keyof T]:T[P]}>(json: JsonObject|string
-                                                   , prototype: Class<T>|T):[ProNullable<T>, null|Error] {
+    , prototype: {new(...args:any[]): T}|T):[ProNullable<T>, null|Error] {
+
     if (typeof prototype === "function") {
       prototype = new prototype();
     }

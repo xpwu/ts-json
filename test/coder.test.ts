@@ -1,4 +1,4 @@
-import {Class, JsonType, RawJson} from "../src"
+import {JsonType, RawJson} from "../src"
 import {hasConstructorDecoder, hasConstructorEncoder, hasDecoder, hasEncoder} from "../src/coder"
 
 

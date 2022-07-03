@@ -1,12 +1,7 @@
 
-
-export interface Class<T> {
-  new(): T
-}
-
 export class ClassArray<T extends {[P in keyof T]: T[P]}> extends Array<T> {
 
-  constructor(prototype: Class<T>|T) {
+  constructor(prototype: {new(...args:any[]): T}|T) {
     super();
     // tsbug: 编译为es5后，内建类型继承的原型链会发生错误改变。
     Object.setPrototypeOf(this, ClassArray.prototype);

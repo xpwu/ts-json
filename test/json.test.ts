@@ -135,3 +135,15 @@ test("json-null", ()=>{
   expect(ret.a).toStrictEqual(null)
   expect(ret.c).toStrictEqual(null)
 })
+
+class Cons {
+  constructor(public a:number, public c:string) {
+  }
+}
+
+test("json-null", ()=>{
+  let [ret, err] = new Json().fromJson({}, Cons)
+  expect(err).toBeNull()
+  expect(ret.a).toStrictEqual(null)
+  expect(ret.c).toStrictEqual(null)
+})

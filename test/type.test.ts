@@ -1,4 +1,4 @@
-import {Class, JsonType, ProNullable, PropertyMustNullable} from "../src"
+import {JsonType, ProNullable, PropertyMustNullable} from "../src"
 
 import {
   isJsonEmptyArray,
@@ -94,7 +94,7 @@ class A {
 }
 
 test("must-mull", ()=>{
-  const t = <T extends PropertyMustNullable<T>>(clazz: Class<T>) => {return new clazz()}
+  const t = <T extends PropertyMustNullable<T>>(clazz: {new(...args:any[]): T}) => {return new clazz()}
   const f = ()=>{
     t(A)
   }
@@ -108,7 +108,7 @@ class E {
 }
 
 test("must-mull-exclude", ()=>{
-  const t = <T extends PropertyMustNullable<T, Exclude>, Exclude = never>(clazz: Class<T>) => {return new clazz()}
+  const t = <T extends PropertyMustNullable<T, Exclude>, Exclude = never>(clazz: {new(...args:any[]): T}) => {return new clazz()}
   const f = ()=>{
     t<E, C>(E)
   }
