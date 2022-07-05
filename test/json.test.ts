@@ -147,3 +147,19 @@ test("json-null", ()=>{
   expect(ret.a).toStrictEqual(null)
   expect(ret.c).toStrictEqual(null)
 })
+
+class Ignore {
+  a: string = "ok"
+  @JsonKey("-")
+  b: string = "should be ignore"
+  c: number = 1
+  d: boolean = false
+}
+
+test("json-ignore", ()=>{
+  let json = new Json().toJson(new Ignore())
+  expect(json).toEqual('{"a":"ok","c":1,"d":false}')
+  let [ret, err] = new Json().fromJson('{"a":"ok","b":"test","c":1,"d":false}', Ignore)
+  expect(err).toBeNull()
+  expect(ret.b).toStrictEqual(null)
+})

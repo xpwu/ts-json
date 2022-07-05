@@ -68,6 +68,10 @@ export class Json {
 
     for (let key of getPropertyKeys(from)) {
       let toKey = property2jsonMap.get(key as string|symbol) || key as string;
+      if (toKey === "-") {
+        continue
+      }
+
       let fromV = from[key]
 
       if (fromV === null) {
@@ -128,11 +132,20 @@ export class Json {
     }
 
     let json2PropertyMap: JsonToPropertyMap = (prototype as ConverterMap)[jsonToPropertySym] || new Map();
+    let property2jsonMap: PropertyToJsonMap = (prototype as ConverterMap)[propertyToJsonSym] || new Map();
 
     let hasSetKey = new Set<keyof typeof prototype>()
 
     for (let key of getPropertyKeys(from)) {
+      if (key === "-") {
+        continue
+      }
+
       let toKey = json2PropertyMap.get(key as string) || key;
+
+      if (property2jsonMap.get(toKey as string|symbol) === "-") {
+        continue
+      }
 
       // class对象没有这项值，就跳过
       if (!isPropertyKey(prototype, toKey)) {
@@ -192,6 +205,7 @@ export class Json {
   }
 }
 
+// '-' : ignore
 export function JsonKey(jsonKey:string, ...jsonKeys:string[]): PropertyDecorator {
   return (target: object, propertyKey: string|symbol) => {
 
