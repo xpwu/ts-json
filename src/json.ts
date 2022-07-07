@@ -10,7 +10,7 @@ import {
   isJsonObject,
   isJsonObjectArray, isJsonPrimitiveArray,
   JsonObject,
-  JsonType, ProNullable,
+  JsonType,
 } from "./type"
 
 const jsonToPropertySym: unique symbol = Symbol("from-json");
@@ -44,6 +44,24 @@ function isPropertyKey<T extends object>(instance: T, key: string|symbol|number)
   return instance.hasOwnProperty(key) && instance.propertyIsEnumerable(key)
 }
 
+const has = Symbol()
+
+export type Has<T> = {[P in keyof T as (T[P] extends Function ? never : P)]: boolean}
+
+export function JsonHas<T extends object>(arg: T): Has<T> {
+  if (arg.hasOwnProperty(has)) {
+    return (arg as any)[has]
+  }
+
+  let ret:{[p: string]:boolean} = {}
+  for (let p in arg) {
+    ret[p] = true
+  }
+
+  Object.defineProperty(arg, has, {enumerable:false, value:ret, writable:false})
+
+  return ret as Has<T>
+}
 
 export class Json {
 
@@ -99,9 +117,8 @@ export class Json {
     return to
   }
 
-  // <T extends Mull<T, Exclude>, Exclude = never>
   public fromJson<T extends {[P in keyof T]:T[P]}>(json: JsonObject|string
-    , prototype: {new(...args:any[]): T}|T):[ProNullable<T>, null|Error] {
+    , prototype: {new(...args:any[]): T}|T):[T, null|Error] {
 
     if (typeof prototype === "function") {
       prototype = new prototype();
@@ -121,7 +138,7 @@ export class Json {
   }
 
   private json2class<T extends {[n:number]:any}>(from: JsonObject, prototype: T
-                                        , className: string): [ProNullable<T>, null|Error] {
+    , className: string): [T, null|Error] {
 
     if (hasDecoder(prototype)) {
       let err = prototype.decodeJson(from)
@@ -135,6 +152,8 @@ export class Json {
     let property2jsonMap: PropertyToJsonMap = (prototype as ConverterMap)[propertyToJsonSym] || new Map();
 
     let hasSetKey = new Set<keyof typeof prototype>()
+
+    let hasValue:{[p: string|symbol|number]:boolean} = {}
 
     for (let key of getPropertyKeys(from)) {
       if (key === "-") {
@@ -153,6 +172,7 @@ export class Json {
       }
 
       hasSetKey.add(toKey)
+      hasValue[toKey] = true
 
       if (from[key] === null) {
         prototype[toKey] = null
@@ -197,12 +217,120 @@ export class Json {
 
     for (let key of getPropertyKeys(prototype)) {
       if (!hasSetKey.has(key)) {
-        (prototype as ProNullable<typeof prototype>)[key] = null
+        // (prototype as ProNullable<typeof prototype>)[key] = null
+        hasValue[key] = false
       }
     }
 
+    Object.defineProperty(prototype, has, {enumerable:false, value:hasValue, writable:false})
+
     return [prototype, null]
   }
+
+  // <T extends Mull<T, Exclude>, Exclude = never>
+  // public fromJson2<T extends {[P in keyof T]:T[P]}>(json: JsonObject|string
+  //   , prototype: {new(...args:any[]): T}|T):[ProNullable<T>, null|Error] {
+  //
+  //   if (typeof prototype === "function") {
+  //     prototype = new prototype();
+  //   }
+  //
+  //   let jsonObj :JsonObject = json as JsonObject
+  //   if (typeof json === "string") {
+  //     let par = JSON.parse(json)
+  //     if (par === null || typeof par !== "object" || par instanceof Array) {
+  //       return [prototype, new Error("json string must be '{...}'")]
+  //     }
+  //
+  //     jsonObj = par
+  //   }
+  //
+  //   return this.json2class2(jsonObj, prototype, prototype.constructor.name)
+  // }
+  //
+  // private json2class2<T extends {[n:number]:any}>(from: JsonObject, prototype: T
+  //                                       , className: string): [ProNullable<T>, null|Error] {
+  //
+  //   if (hasDecoder(prototype)) {
+  //     let err = prototype.decodeJson(from)
+  //     return [prototype, err]
+  //   }
+  //   if (hasConstructorDecoder(prototype.constructor)) {
+  //     return prototype.constructor.decodeJson(from)
+  //   }
+  //
+  //   let json2PropertyMap: JsonToPropertyMap = (prototype as ConverterMap)[jsonToPropertySym] || new Map();
+  //   let property2jsonMap: PropertyToJsonMap = (prototype as ConverterMap)[propertyToJsonSym] || new Map();
+  //
+  //   let hasSetKey = new Set<keyof typeof prototype>()
+  //
+  //   for (let key of getPropertyKeys(from)) {
+  //     if (key === "-") {
+  //       continue
+  //     }
+  //
+  //     let toKey = json2PropertyMap.get(key as string) || key;
+  //
+  //     if (property2jsonMap.get(toKey as string|symbol) === "-") {
+  //       continue
+  //     }
+  //
+  //     // class对象没有这项值，就跳过
+  //     if (!isPropertyKey(prototype, toKey)) {
+  //       continue
+  //     }
+  //
+  //     hasSetKey.add(toKey)
+  //
+  //     if (from[key] === null) {
+  //       prototype[toKey] = null
+  //       continue
+  //     }
+  //
+  //     className = className + "." + toKey.toString()
+  //
+  //     let fromV = from[key]
+  //     let keyProto = prototype[toKey]
+  //
+  //     let err = checkType(fromV, keyProto, className)
+  //     if (err !== null) {
+  //       return [prototype, err]
+  //     }
+  //
+  //     if (isJsonObjectArray(fromV) && isClassArray<{[key:number]:any}>(keyProto)) {
+  //       let item = getArrayItemPrototype(keyProto)
+  //       let retArr = new Array<typeof item>()
+  //       for (let i = 0; i < fromV.length; ++i) {
+  //         let [ret, err] = this.json2class(fromV[i], item, className + `[${i}]`)
+  //         if (err !== null) {
+  //           return [prototype, err]
+  //         }
+  //         retArr.push(ret)
+  //       }
+  //
+  //       prototype[toKey] = retArr
+  //       continue
+  //     }
+  //
+  //     if (isJsonObject(fromV) && isClass(keyProto)) {
+  //       [prototype[toKey], err] = this.json2class(fromV, keyProto, className)
+  //       if (err !== null) {
+  //         return [prototype, err]
+  //       }
+  //       continue
+  //     }
+  //
+  //     prototype[toKey] = fromV
+  //   }
+  //
+  //   for (let key of getPropertyKeys(prototype)) {
+  //     if (!hasSetKey.has(key)) {
+  //       (prototype as ProNullable<typeof prototype>)[key] = null
+  //     }
+  //   }
+  //
+  //   return [prototype, null]
+  // }
 }
 
 // '-' : ignore

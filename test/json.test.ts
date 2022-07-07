@@ -1,4 +1,5 @@
-import {ClassArray, Json, JsonKey, ProNullable, RawJson} from "../src"
+import {ClassArray, Json, JsonKey, RawJson} from "../src"
+import {JsonHas} from "../src/json"
 
 
 class Msg {
@@ -65,11 +66,6 @@ test("json", ()=>{
   expect(instance2).toEqual(user)
 })
 
-
-function nullable<T>(arg: T): ProNullable<T> {
-  return arg
-}
-
 class Cases {
   constructor(public json:string, public prototype:object) {
   }
@@ -89,7 +85,7 @@ test("json-type-err", ()=>{
   for (let cs of cases) {
     let err:any
     try {
-      [, err] = tson.fromJson(cs.json, nullable(cs.prototype))
+      [, err] = tson.fromJson(cs.json, cs.prototype)
     }catch (e) {
       expect(cs.json + " --- " + e).toBe("")
     }
@@ -115,7 +111,7 @@ test("json-type-ok", ()=>{
   for (let cs of cases) {
     let err:any
     try {
-      [, err] = tson.fromJson(cs.json, nullable(cs.prototype))
+      [, err] = tson.fromJson(cs.json, cs.prototype)
     }catch (e) {
       expect(cs.json + " --- " + e).toBe("")
     }
@@ -129,23 +125,29 @@ class Null {
   c: string | null = ""
 }
 
-test("json-null", ()=>{
-  let [ret, err] = new Json().fromJson({}, Null)
-  expect(err).toBeNull()
-  expect(ret.a).toStrictEqual(null)
-  expect(ret.c).toStrictEqual(null)
-})
-
 class Cons {
   constructor(public a:number, public c:string) {
   }
 }
 
-test("json-null", ()=>{
-  let [ret, err] = new Json().fromJson({}, Cons)
+test("json-empty", ()=>{
+  let [ret, err] = new Json().fromJson({}, Null)
   expect(err).toBeNull()
-  expect(ret.a).toStrictEqual(null)
-  expect(ret.c).toStrictEqual(null)
+  expect(ret.a).toBe(10)
+  expect(ret.c).toBe("")
+
+  let has = JsonHas(ret)
+  expect(has.c).toBe(false)
+  expect(has.a).toBe(false)
+
+  let [ret2, err2] = new Json().fromJson({}, Cons)
+  expect(err2).toBeNull()
+  expect(ret2.a).toBe(undefined)
+  expect(ret2.c).toBe(undefined)
+
+  let has2 = JsonHas(ret2)
+  expect(has2.a).toBe(false)
+  expect(has2.c).toBe(false)
 })
 
 class Ignore {
@@ -161,5 +163,30 @@ test("json-ignore", ()=>{
   expect(json).toEqual('{"a":"ok","c":1,"d":false}')
   let [ret, err] = new Json().fromJson('{"a":"ok","b":"test","c":1,"d":false}', Ignore)
   expect(err).toBeNull()
-  expect(ret.b).toStrictEqual(null)
+  expect(ret.b).toBe("should be ignore")
+
+  let has = JsonHas(ret)
+  expect(has.b).toBe(false)
+  expect(has.a).toBe(true)
+  expect(has.c).toBe(true)
+  expect(has.d).toBe(true)
 })
+
+
+class NullValue {
+  constructor(public a:string, public c:number) {
+  }
+}
+
+test("test-null", ()=>{
+  let [ret, err] = new Json().fromJson({a:null}, NullValue)
+  expect(err).toBeNull()
+  expect(ret.a).toBe(null)
+  expect(ret.c).toBe(undefined)
+
+  let has = JsonHas(ret)
+  expect(has.a).toBe(true)
+  expect(has.c).toBe(false)
+})
+
+

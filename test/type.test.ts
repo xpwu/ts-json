@@ -1,4 +1,4 @@
-import {JsonType, ProNullable, PropertyMustNullable} from "../src"
+import {JsonType} from "../src"
 
 import {
   isJsonEmptyArray,
@@ -6,7 +6,7 @@ import {
   isJsonObject,
   isJsonObjectArray,
   isJsonPrimitive,
-  isJsonPrimitiveArray
+  isJsonPrimitiveArray, ProNullable, PropertyMustNullable
 } from "../src/type"
 
 class TypeCase {
