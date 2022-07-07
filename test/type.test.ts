@@ -115,4 +115,25 @@ test("must-mull-exclude", ()=>{
   expect(f).not.toThrow()
 })
 
+class Con {
+  constructor(public a:string, public c:number) {
+  }
+}
+
+function New<T>(con: {new (...args:any[]):T}):T {
+  return new con()
+}
+
+test("test-con", ()=>{
+  let con = New(Con)
+  expect(con.a).toBe(undefined)
+  expect(con.a).not.toBe(null)
+  expect(con.a).not.toBe("")
+  expect(!!con.a).not.toBeTruthy()
+  expect(con.c).toBe(undefined)
+  expect(con.c).not.toBe(null)
+  expect(con.c).not.toBe(0)
+  expect(!!con.c).not.toBeTruthy()
+})
+
 
