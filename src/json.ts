@@ -15,8 +15,8 @@ import {
 
 const jsonToPropertySym: unique symbol = Symbol("from-json");
 const propertyToJsonSym: unique symbol = Symbol("to-json");
-const jsonDecoderSym:symbol = Symbol("json-decoder");
-const jsonEncoderSym:symbol = Symbol("json-encoder");
+// const jsonDecoderSym:symbol = Symbol("json-decoder");
+// const jsonEncoderSym:symbol = Symbol("json-encoder");
 
 type JsonToPropertyMap = Map<string, string|symbol>
 type PropertyToJsonMap = Map<string|symbol, string>
@@ -78,7 +78,7 @@ export class Json {
         continue
       }
 
-      if (isClass<object>(fromV)) {
+      if (isClass(fromV)) {
         to[toKey] = this.class2json(fromV);
         continue;
       }
@@ -184,7 +184,7 @@ export class Json {
         continue
       }
 
-      if (isJsonObject(fromV) && isClass<{[key:number]:any}>(keyProto)) {
+      if (isJsonObject(fromV) && isClass(keyProto)) {
         [prototype[toKey], err] = this.json2class(fromV, keyProto, className)
         if (err !== null) {
           return [prototype, err]

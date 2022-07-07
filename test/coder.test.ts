@@ -3,11 +3,11 @@ import {hasConstructorDecoder, hasConstructorEncoder, hasDecoder, hasEncoder} fr
 
 
 class ConstructorCoder {
-  static decodeJson(json: JsonType): [any, Error|null] {
+  static decodeJson(_: JsonType): [any, Error|null] {
     return [null , null]
   }
 
-  static encodeJson<T>(instance: T): JsonType {
+  static encodeJson<T>(_: T): JsonType {
     return null
   }
 }

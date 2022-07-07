@@ -17,7 +17,6 @@ class TypeCase {
 }
 
 test("json-type", ()=>{
-  let newCase
   let cases : TypeCase[] = [
     new TypeCase({},true),
     new TypeCase({a:0, djkd:""},true),
@@ -81,11 +80,11 @@ class A {
     return null
   }
 
-  getC(c:number): null {
+  getC(_:number): null {
     return null
   }
 
-  getD(c:number, abc:string, efg:string): null {
+  getD(_1:number, _2:string, _3:string): null {
     return null
   }
 

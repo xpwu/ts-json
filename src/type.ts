@@ -32,7 +32,7 @@ export function isJsonPrimitiveArray(arg: JsonType): arg is JsonPrimitive[] {
   return isJsonArray(arg) && arg.length !== 0 && isJsonPrimitive(arg[0])
 }
 
-type Item<Type> = Type extends Array<infer Item> ? Item : never;
+export type Item<Type> = Type extends Array<infer Item> ? Item : never;
 
 type Primitive = number|null|string|symbol|boolean
 

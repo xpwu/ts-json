@@ -37,7 +37,7 @@ export function isClassArray<T extends object>(arg: any): arg is ClassArray<T>|N
     || arg instanceof Array && arg.length !== 0 && isClass(arg[0]))
 }
 
-export function isClass<T>(arg: any): arg is {[key:number]:any} {
+export function isClass(arg: any): arg is {[key:number]:any} {
   return arg !== null && typeof arg === "object" && !(arg instanceof Array)
 }
 

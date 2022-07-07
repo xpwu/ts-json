@@ -1,11 +1,4 @@
-import {
-  isJsonEmptyArray,
-  isJsonArray,
-  isJsonObject,
-  isJsonObjectArray,
-  isJsonPrimitive,
-  isJsonPrimitiveArray
-} from "../src/type"
+
 import {canRecEmptyArray, ClassArray, isClass, isClassArray, isPrimitive, isPrimitiveArray} from "../src/class"
 
 class DefaultConstructor {
@@ -20,7 +13,6 @@ class TypeCase {
 }
 
 test("json-type", ()=>{
-  let newCase
   let cases : TypeCase[] = [
     new TypeCase({},true),
     new TypeCase({a:0, djkd:""},true),
