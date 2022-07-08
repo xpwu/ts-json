@@ -46,7 +46,9 @@ function isPropertyKey<T extends object>(instance: T, key: string|symbol|number)
 
 const has = Symbol()
 
-export type Has<T> = {[P in keyof T as (T[P] extends Function ? never : P)]: boolean}
+// todo: generic error: for example  class a<T>{d:T}    has<a> ?= {} not {d:boolean}
+// export type Has<T> = {[P in keyof T as (T[P] extends Function ? never : P)]: boolean}
+export type Has<T> = {[P in keyof T]: boolean}
 
 export function JsonHas<T extends object>(arg: T): Has<T> {
   if (arg.hasOwnProperty(has)) {
