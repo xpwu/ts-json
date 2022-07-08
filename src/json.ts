@@ -94,7 +94,7 @@ export class Json {
 
       let fromV = from[key]
 
-      if (fromV === null) {
+      if (fromV === undefined) {
         continue
       }
 
