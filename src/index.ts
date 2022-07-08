@@ -1,5 +1,5 @@
 
-export {Json, JsonKey} from "./json"
+export {Json, JsonKey, JsonHas, Has} from "./json"
 
 export {JsonDecoder, JsonEncode, ConstructorJsonDecoder, ConstructorJsonEncoder, RawJson} from "./coder"
 
