@@ -1,4 +1,4 @@
-import {JsonType} from "../src"
+import {JsonType} from "../index"
 
 import {
   isJsonEmptyArray,
