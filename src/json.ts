@@ -67,6 +67,31 @@ export function JsonHas<T extends object>(arg: T): Has<T> {
 
 export class Json {
 
+  constructor() {
+    this.disallowNull()
+  }
+
+  public ignoreNull(): this {
+    this.nullToJson = (_,_2)=>{}
+    this.fromNullJson = (_,_2)=>{return null}
+    return this
+  }
+
+  public allowNull(): this {
+    this.nullToJson = (p,key)=>{(p as any)[key] = null}
+    this.fromNullJson = (p,key)=>{(p as any)[key] = null; return null}
+    return this
+  }
+
+  public disallowNull(): this {
+    this.nullToJson = (_,_2)=>{}
+    this.fromNullJson = (_,_2)=>{return Error("can not null")}
+    return this
+  }
+
+  private nullToJson: <T>(to:T, key: keyof T) =>void = (_,_2)=>{}
+  private fromNullJson: <T>(to:T, key: keyof T) =>Error|null = (_,_2)=>{return null}
+
   public toJson<T extends object>(instance: T): string {
 
     let to = this.class2json(instance);
@@ -95,6 +120,11 @@ export class Json {
       let fromV = from[key]
 
       if (fromV === undefined) {
+        continue
+      }
+
+      if (fromV === null) {
+        this.nullToJson(to, toKey)
         continue
       }
 
@@ -177,7 +207,10 @@ export class Json {
       hasValue[toKey] = true
 
       if (from[key] === null) {
-        prototype[toKey] = null
+        let err = this.fromNullJson(prototype, toKey)
+        if (err) {
+          return [prototype, Error(className + "---" + err.message)]
+        }
         continue
       }
 

@@ -1,4 +1,4 @@
-import {ClassArray, Json, JsonKey, RawJson} from "../src"
+import {ClassArray, Json, JsonKey, RawJson} from "../index"
 import {JsonHas} from "../src/json"
 
 
@@ -179,7 +179,7 @@ class NullValue {
 }
 
 test("test-null", ()=>{
-  let [ret, err] = new Json().fromJson({a:null}, NullValue)
+  let [ret, err] = new Json().allowNull().fromJson({a:null}, NullValue)
   expect(err).toBeNull()
   expect(ret.a).toBe(null)
   expect(ret.c).toBe(undefined)
