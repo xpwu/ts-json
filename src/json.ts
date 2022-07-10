@@ -416,7 +416,7 @@ function checkType<T>(fromV: JsonType
   }
   // todo: check array element
 
-  if (property === null) {
+  if (property === null || property === undefined) {
     return null
   }
 

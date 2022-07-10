@@ -189,4 +189,13 @@ test("test-null", ()=>{
   expect(has.c).toBe(false)
 })
 
+test("test-undefined", ()=>{
+  let [ret, err] = new Json().fromJson({a:"ok", c:100}, NullValue)
+  expect(err).toBeNull()
+  expect(ret.a).toBe("ok")
+  expect(ret.c).toBe(100)
 
+  let has = JsonHas(ret)
+  expect(has.a).toBe(true)
+  expect(has.c).toBe(true)
+})
