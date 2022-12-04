@@ -44,7 +44,7 @@ function isPropertyKey<T extends object>(instance: T, key: string|symbol|number)
   return instance.hasOwnProperty(key) && instance.propertyIsEnumerable(key)
 }
 
-const has = Symbol()
+const has = Symbol("has")
 
 // todo: generic error: for example  class a<T>{d:T}    has<a> ?= {} not {d:boolean}
 // export type Has<T> = {[P in keyof T as (T[P] extends Function ? never : P)]: boolean}
@@ -55,6 +55,7 @@ export function JsonHas<T extends object>(arg: T): Has<T> {
     return (arg as any)[has]
   }
 
+  // 仅仅是补偿性逻辑，fromJson 返回的对象都已经设置了has
   let ret:{[p: string]:boolean} = {}
   for (let p in arg) {
     ret[p] = true
@@ -206,20 +207,19 @@ export class Json {
       hasSetKey.add(toKey)
       hasValue[toKey] = true
 
+      let propertyName = className + "." + toKey.toString()
       if (from[key] === null) {
         let err = this.fromNullJson(prototype, toKey)
         if (err) {
-          return [prototype, Error(className + "---" + err.message)]
+          return [prototype, Error(propertyName + "---" + err.message)]
         }
         continue
       }
 
-      className = className + "." + toKey.toString()
-
       let fromV = from[key]
       let keyProto = prototype[toKey]
 
-      let err = checkType(fromV, keyProto, className)
+      let err = checkType(fromV, keyProto, propertyName)
       if (err !== null) {
         return [prototype, err]
       }
@@ -228,7 +228,7 @@ export class Json {
         let item = getArrayItemPrototype(keyProto)
         let retArr = new Array<typeof item>()
         for (let i = 0; i < fromV.length; ++i) {
-          let [ret, err] = this.json2class(fromV[i], item, className + `[${i}]`)
+          let [ret, err] = this.json2class(fromV[i], item, propertyName + `[${i}]`)
           if (err !== null) {
             return [prototype, err]
           }
@@ -240,7 +240,7 @@ export class Json {
       }
 
       if (isJsonObject(fromV) && isClass(keyProto)) {
-        [prototype[toKey], err] = this.json2class(fromV, keyProto, className)
+        [prototype[toKey], err] = this.json2class(fromV, keyProto, propertyName)
         if (err !== null) {
           return [prototype, err]
         }
