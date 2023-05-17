@@ -1,10 +1,12 @@
 
-export {Json, JsonKey, JsonHas, Has} from "./src/json"
+export {Json, JsonKey, JsonHas, type Has} from "./src/json"
 
-export {JsonDecoder, JsonEncode, ConstructorJsonDecoder, ConstructorJsonEncoder, RawJson} from "./src/coder"
+export type {JsonDecoder, JsonEncode, ConstructorJsonDecoder, ConstructorJsonEncoder} from "./src/coder"
+
+export {RawJson} from "./src/coder"
 
 export {ClassArray} from "./src/class"
 
-export {JsonType, JsonObject, JsonPrimitive, JsonArray} from "./src/type"
+export type {JsonType, JsonObject, JsonPrimitive, JsonArray} from "./src/type"
 
 // export {ProNullable, PropertyMustNullable, asNonNull} from "./type"
