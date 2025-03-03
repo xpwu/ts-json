@@ -100,6 +100,10 @@ export class Json {
     return JSON.stringify(to);
   }
 
+  public toJsonType<T extends object>(instance: T): JsonType {
+    return this.class2json(instance)
+  }
+
   private class2json<T extends object>(from: T): JsonType {
     if (hasEncoder(from)) {
       return from.encodeJson()
@@ -150,24 +154,30 @@ export class Json {
     return to
   }
 
-  public fromJson<T extends {[P in keyof T]:T[P]}>(json: JsonObject|string
+  public fromJson<T extends {[P in keyof T]:T[P]}>(json: string|JsonType
     , prototype: {new(...args:any[]): T}|T):[T, null|Error] {
 
     if (typeof prototype === "function") {
       prototype = new prototype();
     }
 
-    let jsonObj :JsonObject = json as JsonObject
-    if (typeof json === "string") {
-      let par = JSON.parse(json)
-      if (par === null || typeof par !== "object" || par instanceof Array) {
-        return [prototype, new Error("json string must be '{...}'")]
-      }
-
-      jsonObj = par
+    if (hasDecoder(prototype)) {
+      let err = prototype.decodeJson(json)
+      return [prototype, err]
+    }
+    if (hasConstructorDecoder(prototype.constructor)) {
+      return prototype.constructor.decodeJson(json)
     }
 
-    return this.json2class(jsonObj, prototype, prototype.constructor.name)
+    if (typeof json === "string") {
+      json = JSON.parse(json)
+    }
+    if (!isJsonObject(json)) {
+      return [prototype, new Error(`${prototype.constructor.name} has not Decoder or ConstructorDecoder`
+        + "so, json must be an object {...} or an object string '{...}'")]
+    }
+
+    return this.json2class(json, prototype, prototype.constructor.name)
   }
 
   private json2class<T extends {[n:number]:any}>(from: JsonObject, prototype: T
