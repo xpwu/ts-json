@@ -4,10 +4,11 @@
 ## 1、基本使用
 1、类中属性的类型与json字符串中的类型必须满足js类型的一致性；    
 2、类中属性的类型如果是某一类型与null的组合类型，在类型检查时，忽略null类型；  
-3、说有的属性都必须有初始化值，如果json字符串中没有对某个域重新设值，
+3、所有的属性都必须有初始化值，如果json字符串中没有对某个域重新设值，
 返回的实例中该域仍是初始设定的值。
 
-```
+```typescript
+
 class A {
     a: number = 10
     c: string|null = "this is a string"
@@ -35,7 +36,8 @@ let [a,err] = new Json().fromJson(jsn, A)
 但是具体使用该项值时，仍然与普通数组一样使用   
 
 
-```
+```typescript
+
 class Msg {
   id: string = ""
   content: string = "this is a content"
@@ -83,7 +85,8 @@ let msg = new Msg()
 3、allowNull 会添加null的字段到json字符串中，也会对json字符串中的null解析给实例；   
 4、ignoreNull 会忽略所有的null
 
-```
+```typescript
+
 let a = new A()
   a.c = null
 
@@ -118,7 +121,8 @@ let a = new A()
 1、可以重新设定键名；   
 2、如果指定为 - 表示忽略此项。   
 
-```
+```typescript
+
 class TestJsonKey {
   @JsonKey("f")
   f1: string = "f1"
@@ -139,7 +143,9 @@ class TestJsonKey {
 ```
 
 ## 5、判断json字符串是否有某一项
-```
+
+```typescript
+
 class TestJsonKey {
   @JsonKey("f")
   f1: string = "f1"
@@ -158,3 +164,36 @@ class TestJsonKey {
 
 ```
 对于嵌套类型，逐层检测即可。
+
+## 6、RawJson    
+1、暂缓解析，保留原json数据，比如分步解析   
+2、不再编码，保留现有的JsonType，比如逐层构造
+```typescript
+
+class User {
+  name: string = ""
+  age: number = 0
+}
+
+class Response {
+  code: number = 200
+  data: RawJson = new RawJson()
+}
+
+const json = `{"code":200, "data":{"name":"xp", "age":18}}`
+
+// 第一层解析，保留了 data 的原始数据
+let res = new Json().fromJson(json, Response)
+expect(res[1]).toBeNull()
+expect(res[0].code).toBe(200)
+
+// 第二层解析，解析 data 的数据
+let user = new Json().fromJson(res[0].data.raw, User)
+expect(user[1]).toBeNull()
+expect(user[0]).toEqual({
+  name: "xp",
+  age: 18
+})
+
+```
+
