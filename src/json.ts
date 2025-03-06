@@ -53,10 +53,11 @@ export function JsonHas<T extends object>(arg: T): Has<T> {
     return (arg as any)[has]
   }
 
-  // 仅仅是补偿性逻辑，fromJson 返回的对象都已经设置了has
+  // fromJson 返回的对象都已经设置了has
+  // 对于不是 fromJson返回的对象，has 都返回 false
   let ret:{[p: string]:boolean} = {}
   for (let p in arg) {
-    ret[p] = true
+    ret[p] = false
   }
 
   Object.defineProperty(arg, has, {enumerable:false, value:ret, writable:false})
