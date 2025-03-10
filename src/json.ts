@@ -65,6 +65,21 @@ export function JsonHas<T extends object>(arg: T): Has<T> {
   return ret as Has<T>
 }
 
+export function JsonHasAll<T extends object>(arg: T, ...exclude: Extract<keyof T, string>[]): boolean {
+  if (!arg.hasOwnProperty(has)) {
+    return false
+  }
+
+  let h: Has<T> = (arg as any)[has]
+  for (let p in h) {
+    if (h[p] == false && !exclude.includes(p)) {
+      return false
+    }
+  }
+
+  return true
+}
+
 export class Json {
 
   constructor() {
