@@ -163,7 +163,8 @@ class TestJsonKey {
   expect(has.f3).toBe(false)
 
 ```
-对于嵌套类型，逐层检测即可。
+对于嵌套类型，逐层检测即可。   
+也可以使用 JsonHasAll() 检查全部字段。
 
 ## 6、RawJson    
 1、暂缓解析，保留原json数据，比如分步解析   
