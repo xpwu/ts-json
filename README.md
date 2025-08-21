@@ -1,6 +1,13 @@
 # ts-json
 从json字符串中解析出一个已定义的类，或者把类转化为json字符串。
 
+## 0、代码库的引用
+```
+"dependencies": {
+    "ts-json": "https://github.com/xpwu/ts-json#semver:^0.2.x"
+  },
+```
+
 ## 1、基本使用
 1、类中属性的类型与json字符串中的类型必须满足js类型的一致性；    
 2、类中属性的类型如果是某一类型与null的组合类型，在类型检查时，忽略null类型；  
