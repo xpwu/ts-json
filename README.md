@@ -4,7 +4,7 @@
 ## 0、代码库的引用
 ```
 "dependencies": {
-    "ts-json": "https://github.com/xpwu/ts-json#semver:^0.2.x"
+    "ts-json": "github:xpwu/ts-json#semver:^0.3.0"
   },
 ```
 
