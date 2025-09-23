@@ -1,5 +1,5 @@
-import {Json, JsonHas, JsonKey} from "../src/json"
-import {ClassArray} from "../src/class"
+import {Json, JsonHas, JsonKey} from ".."
+import {ClassArray} from ".."
 
 
 class A {

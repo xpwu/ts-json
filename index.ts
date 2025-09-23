@@ -1,5 +1,5 @@
 
-export {Json, JsonKey, JsonHas, type Has} from "./src/json"
+export {Json, JsonKey, JsonHas, JsonHasAll, type Has} from "./src/json"
 
 export type {JsonDecoder, JsonEncode, ConstructorJsonDecoder, ConstructorJsonEncoder} from "./src/coder"
 

@@ -1,4 +1,4 @@
-import {Json, JsonHas, JsonHasAll} from "../src/json";
+import {Json, JsonHas, JsonHasAll} from "..";
 
 
 class User {

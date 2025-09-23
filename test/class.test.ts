@@ -1,5 +1,6 @@
 
-import {canRecEmptyArray, ClassArray, isClass, isClassArray, isPrimitive, isPrimitiveArray} from "../src/class"
+import {canRecEmptyArray, isClass, isClassArray, isPrimitive, isPrimitiveArray} from "../dist/src/class"
+import {ClassArray} from ".."
 
 class DefaultConstructor {
 

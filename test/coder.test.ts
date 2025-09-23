@@ -1,5 +1,5 @@
-import {JsonType, RawJson} from "../index"
-import {hasConstructorDecoder, hasConstructorEncoder, hasDecoder, hasEncoder} from "../src/coder"
+import {JsonType, RawJson} from ".."
+import {hasConstructorDecoder, hasConstructorEncoder, hasDecoder, hasEncoder} from "../dist/src/coder"
 
 
 class ConstructorCoder {

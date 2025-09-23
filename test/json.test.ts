@@ -1,5 +1,5 @@
-import {ClassArray, Json, JsonKey, RawJson} from "../index"
-import {JsonHas} from "../src/json"
+import {ClassArray, Json, JsonKey, RawJson} from ".."
+import {JsonHas} from ".."
 
 
 class Msg {

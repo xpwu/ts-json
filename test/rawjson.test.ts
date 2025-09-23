@@ -1,5 +1,5 @@
-import {RawJson} from "../src/coder";
-import {Json} from "../src/json";
+import {RawJson} from "..";
+import {Json} from "..";
 
 
 class User {
