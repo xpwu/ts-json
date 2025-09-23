@@ -1,36 +1,40 @@
 {
   "name": "ts-json",
-  "version": "0.2.0",
-  "description": "typescript json",
+  "version": "0.3.0",
+  "description": "typescript json de/encoder",
   "author": "xpwu",
+	"type": "module",
+	"main": "./dist",
+	"types": "./dist",
   "dependencies": {},
   "devDependencies": {
-    "@types/jest": "28.1.3",
-    "jest": "28.1.1",
-    "ts-jest": "28.0.5",
-    "typescript": "4.7.4"
+		"@types/jest": "30.0.0",
+		"jest": "30.1.3",
+		"rimraf": "^6.0.1",
+		"ts-jest": "29.4.4"
   },
   "scripts": {
-    "tsc": "tsc",
-    "test": "jest"
+		"clean": "rimraf ./dist",
+		"tsc": "npm run clean && tsc",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "keywords": [
-    "ts",
-    "typescript",
-    "json"
+		"json",
+    "json encoder",
+		"json decoder"
   ],
   "license": "MIT",
   "files": [
     "src",
+		"dist",
     "index.ts"
   ],
+	"engines": {
+		"node": ">=24.8.0"
+	},
   "repository": {
     "type": "git",
     "url": "https://github.com/xpwu/ts-json.git"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testRegex": "test/(.+)\\.test\\.(tsx?)$"
   },
   "miniprogram": "."
 }
